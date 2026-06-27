@@ -1,0 +1,11 @@
+name: CloudChat
+version: '${version}'
+
+main: me.cloudm1nd3.cloudchat.CloudChat
+api-version: '1.21.11'
+load: POSTWORLD
+
+
+commands:
+  chatCommand:
+    description: Команда chatCommand
