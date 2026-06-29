@@ -8,6 +8,7 @@ import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
 import me.cloudm1nd3.cloudchat.managers.CooldownManager;
 import me.cloudm1nd3.cloudchat.objects.ChatChannel;
 import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
+import me.cloudm1nd3.cloudchat.utilities.ChatProcessor;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -18,54 +19,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class AsyncChatListener implements Listener, ChatRenderer {
-    CloudChat plugin;
+    private CloudChat plugin;
+
+    private final ChatProcessor chatProcessor;
 
     public AsyncChatListener(CloudChat plugin){
         this.plugin = plugin;
+        chatProcessor = new ChatProcessor();
     }
 
     @EventHandler
     public void onAsyncChat(AsyncChatEvent event) {
-        Player player = event.getPlayer();
-        ChatPlayer chatPlayer =  ChatPlayerManager.getInstance().getChatPlayer(event.getPlayer());
-        if(chatPlayer == null) return;
+        chatProcessor.process(event);
 
-        Component original = event.originalMessage();
-        String plainMessage = PlainTextComponentSerializer.plainText().serialize(original).trim();
-        if (plainMessage.isEmpty()) {
-            return;
+        if(!event.isCancelled()){
+            event.renderer(this);
         }
 
-        ChatChannel chatChannel = ChannelManager.getInstance().getChatChannelByMessage(plainMessage);
-        if (chatChannel == null) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if(CooldownManager.getInstance().isOnCooldown(chatChannel.getName(), chatPlayer)){
-            event.setCancelled(true);
-            Bukkit.getPlayer(chatPlayer.getUUID()).sendMessage("Остуди своё траханье, дружок");
-            return;
-        }
-
-        event.viewers().removeIf(audience -> {
-            if (!(audience instanceof Player audiPlayer))
-                return false;
-
-            ChatPlayer tempChatPlayer = ChatPlayerManager.getInstance().getChatPlayer(audiPlayer);
-            return tempChatPlayer != null && tempChatPlayer.getHiddenChat();
-        });
-
-        CooldownManager.getInstance().setCooldown(chatChannel.getName(), chatPlayer, chatChannel.getCooldown());
-
-        String format = chatChannel.getFormat();
-        format = format.replace("{message}", plainMessage);
-        format = format.replace("{PLACEHOLDERS}", chatPlayer.getName());
-        Component formattedComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(format);
-
-        event.message(formattedComponent);
-
-        event.renderer(this);
     }
 
     @Override

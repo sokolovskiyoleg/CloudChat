@@ -40,4 +40,11 @@ public class ChatChannel {
     public String getFormat(){
         return format;
     }
+
+    public int getRadius(){
+        return radius;
+    }
+
+
+
 }

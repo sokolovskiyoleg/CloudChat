@@ -1,6 +1,7 @@
 package me.cloudm1nd3.cloudchat.managers;
 
 import me.cloudm1nd3.cloudchat.CloudChat;
+import me.cloudm1nd3.cloudchat.objects.ChatChannel;
 import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
 
 import java.util.HashMap;
@@ -27,22 +28,25 @@ public class CooldownManager {
         return instance;
     }
 
-    public void setCooldown(String channelName, ChatPlayer chatPlayer, int time){
+    public void setCooldown(ChatChannel chatChannel, ChatPlayer chatPlayer){
+        String channelName = chatChannel.getName();
         HashMap<UUID, Long> channelCooldowns = cooldowns.computeIfAbsent(channelName, entry -> new HashMap<>());
 
-        Long cooldownEnd = System.currentTimeMillis() + time * 1000L;
+        Long cooldownEnd = System.currentTimeMillis() + chatChannel.getCooldown() * 1000L;
         channelCooldowns.put(chatPlayer.getUUID(), cooldownEnd);
     }
 
-    public boolean isOnCooldown(String channelName, ChatPlayer chatPlayer){
+    public long getCooldown(ChatChannel chatChannel, ChatPlayer chatPlayer){
+        String channelName = chatChannel.getName();
         HashMap<UUID, Long> channelCooldowns = cooldowns.get(channelName);
         if(channelCooldowns == null){
-            return false;
+            return 0;
         }
         Long playerCooldown = channelCooldowns.get(chatPlayer.getUUID());
         if(playerCooldown == null){
-            return false;
+            return 0;
         }
-        return System.currentTimeMillis() < playerCooldown;
+        return playerCooldown - System.currentTimeMillis();
     }
+
 }
