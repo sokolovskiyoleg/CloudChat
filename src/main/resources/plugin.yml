@@ -5,6 +5,8 @@ main: me.cloudm1nd3.cloudchat.CloudChat
 api-version: '1.21.11'
 load: POSTWORLD
 
+softdepend: [PlaceholderAPI]
+
 
 commands:
   chatCommand:

@@ -10,6 +10,6 @@ public class CloudChatRenderer implements ChatRenderer {
 
     @Override
     public Component render(Player source, Component sourceDisplayName, Component message, Audience viewer) {
-        return null;
+        return message;
     }
 }

@@ -66,6 +66,7 @@ public class ChannelManager {
         defaultSection.set("message-sound", "NONE");
         defaultSection.set("cooldown", 3);
         defaultSection.set("cooldown-bypass-permission", "cloudchat.cooldown.bypass.default");
+        defaultSection.set("prefix", "");
         defaultSection.set("format", "{player_name}: {message}");
         defaultSection.set("radius", 0);
         defaultSection.set("quickSymbol", "");
@@ -137,11 +138,12 @@ public class ChannelManager {
         int cooldown = section.getInt("cooldown", 3);
         String bypassPerm = section.getString("cooldown-bypass-permission",
                 "cloudchat.cooldown.bypass." + name.toLowerCase(Locale.ROOT));
+        String prefix = section.getString("prefix", "");
         String format = section.getString("format", "{player_name}: {message}");
         int radius = section.getInt("radius", 0);
         String quickSymbol = section.getString("quickSymbol", "");
 
-        return new ChatChannel(name, speakPerm, sound, cooldown, bypassPerm, format, radius, quickSymbol);
+        return new ChatChannel(name, speakPerm, sound, cooldown, bypassPerm, prefix, format, radius, quickSymbol);
     }
 
     private Sound parseSound(String str) {

@@ -15,7 +15,8 @@ Channels:
     message-sound: NONE
     cooldown: 0
     cooldown-bypass-permission: cloudchat.cooldown.bypass.local
-    format: "[Local] {PLACEHOLDERS}: {message}"
+    prefix: "[L]"
+    format: "{channel_prefix} {player_name}: {message}"
     radius: 200
     quickSymbol: ''
 
@@ -24,7 +25,8 @@ Channels:
     message-sound: NONE
     cooldown: 3
     cooldown-bypass-permission: cloudchat.cooldown.bypass.global
-    format: "[Global] {PLACEHOLDERS}: {message}"
+    prefix: "[G]"
+    format: "{channel_prefix} {player_name}: {message}"
     radius: 0
     quickSymbol: '!'
 
@@ -33,6 +35,7 @@ Channels:
     message-sound: ENTITY_EXPERIENCE_ORB_PICKUP
     cooldown: 300
     cooldown-bypass-permission: cloudchat.cooldown.bypass.trade
-    format: "[Trade] {PLACEHOLDERS}: {message}"
+    prefix: "[$]"
+    format: "{channel_prefix} {player_name}: {message}"
     radius: 0
     quickSymbol: '$'

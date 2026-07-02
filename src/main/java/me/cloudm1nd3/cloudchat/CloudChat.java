@@ -8,6 +8,7 @@ import me.cloudm1nd3.cloudchat.listeners.PlayerSessionListener;
 import me.cloudm1nd3.cloudchat.managers.ChannelManager;
 import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
 import me.cloudm1nd3.cloudchat.managers.CooldownManager;
+import me.cloudm1nd3.cloudchat.utilities.PlaceholderService;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
@@ -25,7 +26,7 @@ public final class CloudChat extends JavaPlugin {
         ChannelManager.init(this);
         ChatPlayerManager.init(this);
         CooldownManager.init();
-
+        PlaceholderService.init();
 
         Commands chatCommand = new Commands();
         getCommand("chatCommand").setExecutor(chatCommand);

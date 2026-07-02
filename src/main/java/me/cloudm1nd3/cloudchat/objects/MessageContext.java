@@ -16,11 +16,13 @@ public class MessageContext {
 
     private final Player player;
     private final ChatPlayer chatPlayer;
-    private final String plainMessage;
+
+    private final String originalMessageString;
+    private String formattedMessageString;
+
     private final ChatChannel chatChannel;
     private final Collection<Audience> originalViewers;
 
-    private Component formattedMessage;
     private Collection<Audience> formattedViewers;
 
     public MessageContext(AsyncChatEvent event){
@@ -30,9 +32,10 @@ public class MessageContext {
         chatPlayer = ChatPlayerManager.getInstance().getChatPlayer(player);
 
         Component originalMessage = event.originalMessage();
-        plainMessage = PlainTextComponentSerializer.plainText().serialize(originalMessage).trim();
+        originalMessageString = PlainTextComponentSerializer.plainText().serialize(originalMessage).trim();
 
-        chatChannel = ChannelManager.getInstance().getChatChannelByMessage(plainMessage);
+        chatChannel = ChannelManager.getInstance().getChatChannelByMessage(originalMessageString);
+        formattedMessageString = originalMessageString.substring(chatChannel.getQuickSymbol().length());
 
         originalViewers = new HashSet<>(event.viewers());
         formattedViewers = new HashSet<>(originalViewers);
@@ -46,12 +49,12 @@ public class MessageContext {
         return player;
     }
 
-    public String getPlainMessage() {
-        return plainMessage;
+    public String getOriginalMessageString() {
+        return originalMessageString;
     }
 
-    public Component getFormattedMessage(){
-        return formattedMessage;
+    public String getFormattedMessageString(){
+        return formattedMessageString;
     }
 
     public ChatChannel getChatChannel(){
@@ -70,8 +73,8 @@ public class MessageContext {
         return event;
     }
 
-    public void setFormattedMessage(Component formattedMessage){
-        this.formattedMessage = formattedMessage;
+    public void setFormattedMessageString(String formattedMessage){
+        this.formattedMessageString = formattedMessage;
     }
 
     public void setFormattedViewers(Collection<Audience> formattedViewers){

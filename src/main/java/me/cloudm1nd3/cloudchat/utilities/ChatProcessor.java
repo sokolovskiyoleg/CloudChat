@@ -8,7 +8,6 @@ import me.cloudm1nd3.cloudchat.objects.MessageContext;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -47,25 +46,20 @@ public class ChatProcessor {
     }
 
     private void filterMessage(MessageContext context){
-        ChatPlayer chatPlayer = context.getChatPlayer();
         ChatChannel chatChannel = context.getChatChannel();
-        String plainMessage = context.getPlainMessage();
-
         String format = chatChannel.getFormat();
-        plainMessage = plainMessage.substring(chatChannel.getQuickSymbol().length());
-        format = format.replace("{message}", plainMessage);
-        format = format.replace("{PLACEHOLDERS}", chatPlayer.getName());
-        Component formattedComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(format);
 
-        context.setFormattedMessage(formattedComponent);
+        format = PlaceholderService.apply(format, context);
+
+        context.setFormattedMessageString(format);
     }
 
 
     private boolean preProcess(MessageContext context){
         return context.getChatChannel() != null
                 && context.getChatPlayer() != null
-                && context.getPlainMessage() != null
-                && !context.getPlainMessage().isEmpty();
+                && context.getFormattedMessageString() != null
+                && !context.getFormattedMessageString().isEmpty();
     }
 
     private void applyCooldown(MessageContext context){
@@ -90,7 +84,8 @@ public class ChatProcessor {
         event.viewers().clear();
         event.viewers().addAll(context.getFormattedViewers());
 
-        event.message(context.getFormattedMessage());
+        Component formattedComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(context.getFormattedMessageString());
+        event.message(formattedComponent);
     }
 
     private MessageContext getContext(AsyncChatEvent event){

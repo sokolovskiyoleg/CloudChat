@@ -8,18 +8,20 @@ public class ChatChannel {
     private Sound messageSound;
     private final int cooldown;
     private String cooldownBypassPermission;
+    private final String prefix;
     private final String format;
     private int radius;
     private final String quickSymbol;
 
 
     public ChatChannel(String name, String speakPermission, Sound messageSound, int cooldown,
-                       String cooldownBypassPermission, String format, int radius, String quickSymbol){
+                       String cooldownBypassPermission, String prefix, String format, int radius, String quickSymbol){
         this.name = name;
         this.speakPermission = speakPermission;
         this.messageSound = messageSound;
         this.cooldown = cooldown;
         this.cooldownBypassPermission = cooldownBypassPermission;
+        this.prefix = prefix;
         this.format = format;
         this.radius = radius;
         this.quickSymbol = quickSymbol;
@@ -41,10 +43,12 @@ public class ChatChannel {
         return format;
     }
 
+    public String getPrefix(){
+        return prefix;
+    }
+
     public int getRadius(){
         return radius;
     }
-
-
 
 }
