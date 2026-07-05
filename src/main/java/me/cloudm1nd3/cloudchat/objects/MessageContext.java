@@ -3,6 +3,7 @@ package me.cloudm1nd3.cloudchat.objects;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.cloudm1nd3.cloudchat.managers.ChannelManager;
 import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
+import me.cloudm1nd3.cloudchat.utilities.ColorService;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -16,14 +17,11 @@ public class MessageContext {
 
     private final Player player;
     private final ChatPlayer chatPlayer;
-
-    private final String originalMessageString;
-    private String formattedMessageString;
-
     private final ChatChannel chatChannel;
-    private final Collection<Audience> originalViewers;
 
-    private Collection<Audience> formattedViewers;
+    private final String formattedMessageString;
+
+    private final Collection<Audience> originalViewers;
 
     public MessageContext(AsyncChatEvent event){
         this.event = event;
@@ -31,14 +29,14 @@ public class MessageContext {
         player = event.getPlayer();
         chatPlayer = ChatPlayerManager.getInstance().getChatPlayer(player);
 
-        Component originalMessage = event.originalMessage();
-        originalMessageString = PlainTextComponentSerializer.plainText().serialize(originalMessage).trim();
+        Component originalMessageComponent = event.originalMessage();
+        String originalMessageString = ColorService.toPlain(originalMessageComponent).trim();
 
         chatChannel = ChannelManager.getInstance().getChatChannelByMessage(originalMessageString);
-        formattedMessageString = originalMessageString.substring(chatChannel.getQuickSymbol().length());
+
+        formattedMessageString = originalMessageString.substring(chatChannel.getQuickSymbol().length()).trim();
 
         originalViewers = new HashSet<>(event.viewers());
-        formattedViewers = new HashSet<>(originalViewers);
     }
 
     public ChatPlayer getChatPlayer() {
@@ -47,10 +45,6 @@ public class MessageContext {
 
     public Player getPlayer(){
         return player;
-    }
-
-    public String getOriginalMessageString() {
-        return originalMessageString;
     }
 
     public String getFormattedMessageString(){
@@ -65,20 +59,7 @@ public class MessageContext {
         return originalViewers;
     }
 
-    public Collection<Audience> getFormattedViewers(){
-        return formattedViewers;
-    }
-
     public AsyncChatEvent getEvent(){
         return event;
     }
-
-    public void setFormattedMessageString(String formattedMessage){
-        this.formattedMessageString = formattedMessage;
-    }
-
-    public void setFormattedViewers(Collection<Audience> formattedViewers){
-        this.formattedViewers = formattedViewers;
-    }
-
 }

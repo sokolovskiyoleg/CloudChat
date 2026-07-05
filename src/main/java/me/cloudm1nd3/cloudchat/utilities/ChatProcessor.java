@@ -11,7 +11,10 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 public class ChatProcessor {
 
@@ -24,7 +27,7 @@ public class ChatProcessor {
         }
 
         if(!checkPermission(context)){
-            context.getPlayer().sendMessage("Нет прав!");
+            context.getPlayer().sendMessage("&4Нет прав!");
             event.setCancelled(true);
             return;
         }
@@ -36,24 +39,25 @@ public class ChatProcessor {
             return;
         }
 
-        filterViewers(context);
+        Component messageComponent = MessageFormatter.buildMessageComponent(context);
+        if(ColorService.toPlain(messageComponent).trim().isEmpty()){
+            event.setCancelled(true);
+            return;
+        }
 
-        filterMessage(context);
+        Collection<Audience>  finalViewers =  filterViewers(context);
+
+        Component finalMessage = buildMessageComponent(context, messageComponent);
 
         applyCooldown(context);
 
-        applyChangesToEvent(event, context);
+        applyChangesToEvent(event, finalViewers, finalMessage);
     }
 
-    private void filterMessage(MessageContext context){
-        ChatChannel chatChannel = context.getChatChannel();
-        String format = chatChannel.getFormat();
 
-        format = PlaceholderService.apply(format, context);
-
-        context.setFormattedMessageString(format);
+    private Component buildMessageComponent(MessageContext context, Component messageComponent){
+        return MessageFormatter.buildComponent(context, messageComponent);
     }
-
 
     private boolean preProcess(MessageContext context){
         return context.getChatChannel() != null
@@ -77,34 +81,39 @@ public class ChatProcessor {
 
     private boolean checkPermission(MessageContext context){
         Player player = context.getPlayer();
-        return player.hasPermission("cloudchat.speak");
+        String channelName = context.getChatChannel().getName();
+        return player.hasPermission("cloudchat.channel." + channelName);
     }
 
-    private void applyChangesToEvent(AsyncChatEvent event, MessageContext context){
+    private void applyChangesToEvent(AsyncChatEvent event, Collection<Audience> viewers, Component message){
         event.viewers().clear();
-        event.viewers().addAll(context.getFormattedViewers());
-
-        Component formattedComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(context.getFormattedMessageString());
-        event.message(formattedComponent);
+        event.viewers().addAll(viewers);
+        event.message(message);
     }
 
     private MessageContext getContext(AsyncChatEvent event){
         return new MessageContext(event);
     }
 
-    private void filterViewers(MessageContext context){
-        Collection<Audience> viewers = context.getFormattedViewers();
+    private Collection<Audience> filterViewers(MessageContext context){
+        Player player = context.getPlayer();
+        ChatChannel chatChannel = context.getChatChannel();
+        Collection<Audience> viewers = context.getOriginalViewers();
 
-        filterPlayersOutsideRadius(context.getPlayer(), context.getChatChannel().getRadius(), viewers);
+        return filterPlayersOutsideRadius(player, chatChannel.getRadius(), viewers);
     }
 
-    private void filterPlayersOutsideRadius(Player sender, int radius, Collection<Audience> viewers){
-        if(radius <= 0) return;
+    private Collection<Audience> filterPlayersOutsideRadius(Player sender, int radius, Collection<Audience> viewers){
+        List<Audience> filteredViewers = new ArrayList<>(viewers);
+
+        if(radius <= 0) {
+            return filteredViewers;
+        }
 
         Location senderLocation = sender.getLocation();
         double radiusSquared = radius * radius;
 
-        viewers.removeIf(audience -> {
+        filteredViewers.removeIf(audience -> {
             if (audience instanceof Player player) {
                 Location playerLoc = player.getLocation();
 
@@ -115,5 +124,7 @@ public class ChatProcessor {
             }
             return false;
         });
+
+        return filteredViewers;
     }
 }

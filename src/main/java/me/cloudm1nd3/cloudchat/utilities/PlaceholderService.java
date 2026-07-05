@@ -15,8 +15,7 @@ public class PlaceholderService {
 
     public static String apply(String template, MessageContext context) {
         if (papiEnabled) {
-            template = PlaceholderAPI.setBracketPlaceholders(context.getPlayer(), template);
-            template = PlaceholderAPI.setPlaceholders(context.getPlayer(), template);
+            template = applyPAPI(template, context);
         }
 
         template = applyOwn(template, context);
@@ -24,13 +23,18 @@ public class PlaceholderService {
         return template;
     }
 
-    private static String applyOwn(String template, MessageContext context) {
-        template = replaceBoth(template, "channel_prefix", context.getChatChannel().getPrefix());
-        template = replaceBoth(template, "message", context.getFormattedMessageString());
+    private static String applyPAPI(String template, MessageContext context){
+        template = PlaceholderAPI.setPlaceholders(context.getPlayer(), template);
+        template = PlaceholderAPI.setBracketPlaceholders(context.getPlayer(), template);
         return template;
     }
 
-    private static String replaceBoth(String template, String key, String value) {
+    private static String applyOwn(String template, MessageContext context) {
+        template = applyBoth(template, "channel_prefix", context.getChatChannel().getPrefix());
+        return template;
+    }
+
+    private static String applyBoth(String template, String key, String value) {
         return template.replace("{" + key + "}", value)
                 .replace("%" + key + "%", value);
     }
