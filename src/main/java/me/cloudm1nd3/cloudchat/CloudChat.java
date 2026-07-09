@@ -6,6 +6,7 @@ import me.cloudm1nd3.cloudchat.configs.Config;
 import me.cloudm1nd3.cloudchat.listeners.AsyncChatListener;
 import me.cloudm1nd3.cloudchat.listeners.PlayerSessionListener;
 import me.cloudm1nd3.cloudchat.managers.ChannelManager;
+import me.cloudm1nd3.cloudchat.managers.ChatElementManager;
 import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
 import me.cloudm1nd3.cloudchat.managers.CooldownManager;
 import me.cloudm1nd3.cloudchat.utilities.PlaceholderService;
@@ -23,6 +24,7 @@ public final class CloudChat extends JavaPlugin {
     @Override
     public void onEnable() {
         Config.init(this);
+        ChatElementManager.init(this);
         ChannelManager.init(this);
         ChatPlayerManager.init(this);
         CooldownManager.init();

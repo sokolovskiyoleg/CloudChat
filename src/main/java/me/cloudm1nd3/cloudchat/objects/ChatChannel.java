@@ -2,6 +2,8 @@ package me.cloudm1nd3.cloudchat.objects;
 
 import org.bukkit.Sound;
 
+import java.util.List;
+
 public class ChatChannel {
     private final String name;
     private String speakPermission;
@@ -9,22 +11,21 @@ public class ChatChannel {
     private final int cooldown;
     private String cooldownBypassPermission;
     private final String prefix;
-    private final String format;
+    private final List<ChatElement> format;
     private int radius;
     private final String quickSymbol;
 
-
     public ChatChannel(String name, String speakPermission, Sound messageSound, int cooldown,
-                       String cooldownBypassPermission, String prefix, String format, int radius, String quickSymbol){
+                       String cooldownBypassPermission, String prefix, List<ChatElement> format, int radius, String quickSymbol){
         this.name = name;
         this.speakPermission = speakPermission;
         this.messageSound = messageSound;
         this.cooldown = cooldown;
         this.cooldownBypassPermission = cooldownBypassPermission;
         this.prefix = prefix;
-        this.format = format;
         this.radius = radius;
         this.quickSymbol = quickSymbol;
+        this.format = format;
     }
 
     public String getName() {
@@ -39,7 +40,7 @@ public class ChatChannel {
         return cooldown;
     }
 
-    public String getFormat(){
+    public List<ChatElement> getFormat(){
         return format;
     }
 
@@ -50,5 +51,7 @@ public class ChatChannel {
     public int getRadius(){
         return radius;
     }
+
+
 
 }

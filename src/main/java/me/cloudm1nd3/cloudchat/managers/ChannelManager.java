@@ -3,6 +3,7 @@ package me.cloudm1nd3.cloudchat.managers;
 import me.cloudm1nd3.cloudchat.CloudChat;
 import me.cloudm1nd3.cloudchat.configs.Config;
 import me.cloudm1nd3.cloudchat.objects.ChatChannel;
+import me.cloudm1nd3.cloudchat.objects.ChatElement;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
@@ -103,10 +104,6 @@ public class ChannelManager {
         plugin.getLogger().info("Default channel was invalid or missing. Set to first available channel: " + defaultChannelName);
     }
 
-    public String getDefaultChannelName() {
-        return defaultChannelName;
-    }
-
     public ChatChannel getChatChannelByMessage(String message) {
         if (message == null || message.isEmpty()) {
             return null;
@@ -127,8 +124,26 @@ public class ChannelManager {
         return channels.get(channelName);
     }
 
-    public Collection<ChatChannel> getAllChannels() {
-        return new ArrayList<>(channels.values());
+    public List<ChatElement> parseChannelFormat(ConfigurationSection channelSection) {
+        List<ChatElement> result = new ArrayList<>();
+
+        List<?> list = channelSection.getList("format");
+        if (list == null) {
+            String raw = channelSection.getString("format");
+            if (raw != null) result.add(new ChatElement(raw));
+            return result;
+        }
+
+        for (Object item : list) {
+            if (item instanceof String str) {
+                ChatElement element = ChatElementManager.getInstance().getChatElementByName(str);
+                if(element == null){
+                    element = new ChatElement(str);
+                }
+                result.add(element);
+            }
+        }
+        return result;
     }
 
     private ChatChannel parseChannel(String name, ConfigurationSection section) {
@@ -137,11 +152,11 @@ public class ChannelManager {
         Sound sound = parseSound(soundStr);
         int cooldown = section.getInt("cooldown", 3);
         String bypassPerm = section.getString("cooldown-bypass-permission",
-                "cloudchat.cooldown.bypass." + name.toLowerCase(Locale.ROOT));
+                "cloudchat.cooldown.bypass." + name.toLowerCase());
         String prefix = section.getString("prefix", "");
-        String format = section.getString("format", "{player_name}: {message}");
         int radius = section.getInt("radius", 0);
         String quickSymbol = section.getString("quickSymbol", "");
+        List<ChatElement> format = parseChannelFormat(section);
 
         return new ChatChannel(name, speakPerm, sound, cooldown, bypassPerm, prefix, format, radius, quickSymbol);
     }

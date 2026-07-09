@@ -18,45 +18,54 @@ import java.util.Locale;
 
 public class ChatProcessor {
 
-    public void process(AsyncChatEvent event){
+    public void process(AsyncChatEvent event) {
         MessageContext context = getContext(event);
 
-        if(!preProcess(context)){
+        if (!preProcess(context)) {
             event.setCancelled(true);
             return;
         }
 
-        if(!checkPermission(context)){
+        if (!checkPermission(context)) {
             context.getPlayer().sendMessage("&4Нет прав!");
             event.setCancelled(true);
             return;
         }
 
         int cooldown = getCooldown(context);
-        if(cooldown > 0){
+        if (cooldown > 0) {
             context.getPlayer().sendMessage("Остуди своё траханье, друг. Остужать еще " + cooldown + " секунд!");
             event.setCancelled(true);
             return;
         }
 
-        Component messageComponent = MessageFormatter.buildMessageComponent(context);
-        if(ColorService.toPlain(messageComponent).trim().isEmpty()){
+        if (isMessageEmpty(context)) {
             event.setCancelled(true);
             return;
         }
 
-        Collection<Audience>  finalViewers =  filterViewers(context);
+        Component finalComponent = buildFinalComponent(context);
 
-        Component finalMessage = buildMessageComponent(context, messageComponent);
+        Collection<Audience> finalViewers = filterViewers(context);
 
         applyCooldown(context);
 
-        applyChangesToEvent(event, finalViewers, finalMessage);
+        applyChangesToEvent(event, finalViewers, finalComponent);
     }
 
+    private Component buildFinalComponent(MessageContext context){
+        return MessageFormatter.buildFinalComponent(context);
+    }
 
-    private Component buildMessageComponent(MessageContext context, Component messageComponent){
-        return MessageFormatter.buildComponent(context, messageComponent);
+    private boolean isMessageEmpty(MessageContext context) {
+        String raw = context.getFormattedMessageString();
+        if (raw == null) {
+            return true;
+        }
+
+        return context.getPlayer().hasPermission("cloudchat.colors")
+                ? ColorService.isBlankIgnoringLegacyCodes(raw)
+                : raw.trim().isEmpty();
     }
 
     private boolean preProcess(MessageContext context){
