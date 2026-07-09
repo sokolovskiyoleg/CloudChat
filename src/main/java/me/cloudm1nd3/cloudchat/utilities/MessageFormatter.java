@@ -5,10 +5,7 @@ import me.cloudm1nd3.cloudchat.objects.MessageContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MessageFormatter {

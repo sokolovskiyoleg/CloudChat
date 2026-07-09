@@ -1,7 +1,6 @@
 package me.cloudm1nd3.cloudchat.configs;
 
 import me.cloudm1nd3.cloudchat.CloudChat;
-import me.cloudm1nd3.cloudchat.managers.ChannelManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

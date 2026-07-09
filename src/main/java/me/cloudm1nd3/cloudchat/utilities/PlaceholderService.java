@@ -2,7 +2,6 @@ package me.cloudm1nd3.cloudchat.utilities;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.cloudm1nd3.cloudchat.objects.MessageContext;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 
 

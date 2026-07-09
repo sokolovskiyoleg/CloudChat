@@ -10,7 +10,6 @@ import me.cloudm1nd3.cloudchat.managers.ChatElementManager;
 import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
 import me.cloudm1nd3.cloudchat.managers.CooldownManager;
 import me.cloudm1nd3.cloudchat.utilities.PlaceholderService;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;

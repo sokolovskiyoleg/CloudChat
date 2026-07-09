@@ -6,7 +6,6 @@ import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
 import me.cloudm1nd3.cloudchat.utilities.ColorService;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;

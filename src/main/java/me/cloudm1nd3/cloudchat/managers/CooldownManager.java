@@ -1,6 +1,5 @@
 package me.cloudm1nd3.cloudchat.managers;
 
-import me.cloudm1nd3.cloudchat.CloudChat;
 import me.cloudm1nd3.cloudchat.objects.ChatChannel;
 import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
 

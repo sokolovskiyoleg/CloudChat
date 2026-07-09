@@ -7,14 +7,12 @@ import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
 import me.cloudm1nd3.cloudchat.objects.MessageContext;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 public class ChatProcessor {
 

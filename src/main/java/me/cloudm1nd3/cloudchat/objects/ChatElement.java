@@ -2,7 +2,6 @@ package me.cloudm1nd3.cloudchat.objects;
 
 import net.kyori.adventure.text.event.ClickEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatElement {

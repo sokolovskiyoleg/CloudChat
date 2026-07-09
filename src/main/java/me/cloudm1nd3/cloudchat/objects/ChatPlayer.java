@@ -1,7 +1,5 @@
 package me.cloudm1nd3.cloudchat.objects;
 
-import org.bukkit.entity.Player;
-
 import java.util.UUID;
 
 public class ChatPlayer {
