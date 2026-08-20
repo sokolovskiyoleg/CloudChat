@@ -1,0 +1,16 @@
+# Плейсхолдеры указываются в фигурных скобках, например {value}
+# Цвета — через & (легаси-коды)
+# Надеюсь, в будущем будет добавлен MiniMessage =)
+
+prefix: '&8[&bCloudChat&8]&r '
+
+chat:
+  hidden-toggled: '{prefix}&7Отображение чата изменено на &f{value}'
+
+command:
+  player-only: '{prefix}&cЭту команду может использовать только игрок.'
+  unknown: '{prefix}&cНеизвестная подкоманда.'
+
+channel:
+  cooldown: '{prefix}&cПодождите &f{seconds}&c сек. перед следующим сообщением в этот канал.'
+  no-permission: '{prefix}&cУ вас нет прав писать в канал &f{channel}&c.'

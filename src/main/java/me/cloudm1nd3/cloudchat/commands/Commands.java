@@ -1,6 +1,7 @@
 package me.cloudm1nd3.cloudchat.commands;
 
 import me.cloudm1nd3.cloudchat.CloudChat;
+import me.cloudm1nd3.cloudchat.lang.Lang;
 import me.cloudm1nd3.cloudchat.managers.ChatPlayerManager;
 import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
 import me.cloudm1nd3.cloudchat.storage.PlayerData;
@@ -15,16 +16,25 @@ public class Commands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = (Player) sender;
-        if(player == null) return false;
+        if(args.length == 0) {
+            return false;
+        }
 
-        ChatPlayer chatPlayer = ChatPlayerManager.getInstance().getChatPlayer(player);
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Lang.get("command.player-only"));
+            return true;
+        }
+
         if(args[0].equalsIgnoreCase("hide")){
+            ChatPlayer chatPlayer = ChatPlayerManager.getInstance().getChatPlayer(player);
             boolean hiddenChat = chatPlayer.getHiddenChat();
             chatPlayer.setHiddenChat(!hiddenChat);
             PlayerData.savePlayerData(chatPlayer);
-            plugin.getServer().broadcastMessage("Значение HiddenChat изменено на " + !hiddenChat);
+            sender.sendMessage(Lang.component("chat.hidden-toggled", "value", !hiddenChat));
+            return true;
         }
+
+        sender.sendMessage(Lang.get("command.unknown"));
         return true;
     }
 }

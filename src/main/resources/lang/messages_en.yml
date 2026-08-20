@@ -1,0 +1,15 @@
+# Placeholders are written in curly braces, e.g. {value}
+# Colors use & (legacy codes)
+
+prefix: '&8[&bCloudChat&8]&r '
+
+chat:
+  hidden-toggled: '{prefix}&7Chat visibility toggled to &f{value}'
+
+command:
+  player-only: '{prefix}&cThis command can only be used by a player.'
+  unknown: '{prefix}&cUnknown subcommand.'
+
+channel:
+  cooldown: '{prefix}&cPlease wait &f{seconds}&c seconds before your next message in this channel.'
+  no-permission: '{prefix}&cYou do not have permission to speak in the &f{channel}&c channel.'
