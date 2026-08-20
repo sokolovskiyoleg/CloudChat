@@ -10,6 +10,9 @@ chat:
 command:
   player-only: '{prefix}&cЭту команду может использовать только игрок.'
   unknown: '{prefix}&cНеизвестная подкоманда.'
+  reload-success: '{prefix}&aКонфигурация и языковые файлы перезагружены.'
+  reload-failed: '{prefix}&cОшибка при перезагрузке. Смотрите в консоль.'
+  no-permission: '{prefix}&cУ вас нет прав на выполнение этой команды.'
 
 channel:
   cooldown: '{prefix}&cПодождите &f{seconds}&c сек. перед следующим сообщением в этот канал.'
