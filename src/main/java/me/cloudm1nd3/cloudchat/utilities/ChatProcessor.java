@@ -1,6 +1,7 @@
 package me.cloudm1nd3.cloudchat.utilities;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.cloudm1nd3.cloudchat.lang.Lang;
 import me.cloudm1nd3.cloudchat.managers.CooldownManager;
 import me.cloudm1nd3.cloudchat.objects.ChatChannel;
 import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
@@ -25,14 +26,14 @@ public class ChatProcessor {
         }
 
         if (!checkPermission(context)) {
-            context.getPlayer().sendMessage("&4Нет прав!");
+            context.getPlayer().sendMessage(Lang.component("channel.no-permission", "channel", context.getChatChannel().getName()));
             event.setCancelled(true);
             return;
         }
 
         int cooldown = getCooldown(context);
         if (cooldown > 0) {
-            context.getPlayer().sendMessage("Остуди своё траханье, друг. Остужать еще " + cooldown + " секунд!");
+            context.getPlayer().sendMessage(Lang.component("channel.cooldown", "seconds", cooldown));
             event.setCancelled(true);
             return;
         }
