@@ -9,6 +9,9 @@ chat:
 command:
   player-only: '{prefix}&cThis command can only be used by a player.'
   unknown: '{prefix}&cUnknown subcommand.'
+  reload-success: '{prefix}&aConfig and language files reloaded.'
+  reload-failed: '{prefix}&cError during restart. Check the console.'
+  no-permission: '{prefix}&cYou do not have permission to run this command.'
 
 channel:
   cooldown: '{prefix}&cPlease wait &f{seconds}&c seconds before your next message in this channel.'
