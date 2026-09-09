@@ -25,7 +25,7 @@ public class ChatProcessor {
         }
 
         if (!checkPermission(context)) {
-            context.getPlayer().sendMessage("&4Нет прав!");
+            context.getPlayer().sendMessage(ColorService.processLegacy("&4Нет прав!"));
             event.setCancelled(true);
             return;
         }

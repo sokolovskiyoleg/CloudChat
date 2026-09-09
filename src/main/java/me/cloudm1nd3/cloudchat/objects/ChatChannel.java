@@ -10,22 +10,20 @@ public class ChatChannel {
     private Sound messageSound;
     private final int cooldown;
     private String cooldownBypassPermission;
-    private final String prefix;
-    private final List<ChatElement> format;
+    private final List<FormatToken> formatTokens;
     private int radius;
     private final String quickSymbol;
 
     public ChatChannel(String name, String speakPermission, Sound messageSound, int cooldown,
-                       String cooldownBypassPermission, String prefix, List<ChatElement> format, int radius, String quickSymbol){
+                       String cooldownBypassPermission, List<FormatToken> formatTokens, int radius, String quickSymbol){
         this.name = name;
         this.speakPermission = speakPermission;
         this.messageSound = messageSound;
         this.cooldown = cooldown;
         this.cooldownBypassPermission = cooldownBypassPermission;
-        this.prefix = prefix;
         this.radius = radius;
         this.quickSymbol = quickSymbol;
-        this.format = format;
+        this.formatTokens = formatTokens;
     }
 
     public String getName() {
@@ -40,18 +38,11 @@ public class ChatChannel {
         return cooldown;
     }
 
-    public List<ChatElement> getFormat(){
-        return format;
-    }
-
-    public String getPrefix(){
-        return prefix;
+    public List<FormatToken> getFormat(){
+        return formatTokens;
     }
 
     public int getRadius(){
         return radius;
     }
-
-
-
 }

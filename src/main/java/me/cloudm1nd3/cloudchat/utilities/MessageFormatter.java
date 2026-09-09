@@ -1,10 +1,12 @@
 package me.cloudm1nd3.cloudchat.utilities;
 
 import me.cloudm1nd3.cloudchat.objects.ChatElement;
+import me.cloudm1nd3.cloudchat.objects.FormatToken;
 import me.cloudm1nd3.cloudchat.objects.MessageContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.Style;
 
 import java.util.List;
 
@@ -17,9 +19,20 @@ public class MessageFormatter {
     public static Component buildFinalComponent(MessageContext context) {
         Component finalComponent = Component.empty();
 
-        for(ChatElement element : context.getChatChannel().getFormat()){
-            Component elementComponent = buildFromChatElement(element, context);
-            finalComponent = finalComponent.append(elementComponent);
+        for(FormatToken token: context.getChatChannel().getFormat()){
+            switch (token.getType()) {
+                case LITERAL -> {
+                    Component literalComponent = ColorService.processLegacy(PlaceholderService.apply(token.getLiteral(), context));
+                    finalComponent = finalComponent.append(literalComponent);
+                }
+                case ELEMENT -> {
+                    ChatElement element = token.getElement();
+                    finalComponent = finalComponent.append(buildFromChatElement(element, context));
+                }
+                case MESSAGE -> {
+                    finalComponent = finalComponent.append(buildMessageComponent(token.getPreviousCode(), context));
+                }
+            }
         }
 
         return finalComponent;
@@ -29,17 +42,8 @@ public class MessageFormatter {
         if (element == null) {
             return Component.empty();
         }
-        String finalText;
-        Component component;
 
-        if(element.getText().contains("{message}")){
-            component = buildMessageComponent(element, context);
-        } else {
-            finalText = PlaceholderService.apply(element.getText(), context);
-            component = ColorService.processLegacy(finalText);
-        }
-
-
+        Component component = ColorService.processLegacy(PlaceholderService.apply(element.getText(), context));
         List<String> hoverLines = element.getHoverLines();
         if (hoverLines != null && !hoverLines.isEmpty()) {
             StringBuilder hoverBuilder = new StringBuilder();
@@ -71,15 +75,21 @@ public class MessageFormatter {
         return component;
     }
 
-    public static Component buildMessageComponent(ChatElement element, MessageContext context) {
-        String rawMessage = context.getFormattedMessageString();
-
-
-
-        if (context.getPlayer().hasPermission("cloudchat.colors")) {
-            return ColorService.processLegacy(rawMessage);
+    public static Style styleFromLastCodes(String lastColorCode) {
+        if (lastColorCode == null || lastColorCode.isEmpty()) {
+            return Style.empty();
         }
 
-        return Component.text(rawMessage);
+        return ColorService.processLegacy(lastColorCode + "\u2060").style();
+    }
+
+    public static Component buildMessageComponent(String lastColorCode, MessageContext context) {
+        String rawMessage = context.getFormattedMessageString();
+
+        if (context.getPlayer().hasPermission("cloudchat.colors")) {
+            return ColorService.processLegacy(lastColorCode + rawMessage);
+        }
+
+        return Component.text(rawMessage).applyFallbackStyle(styleFromLastCodes(lastColorCode));
     }
 }

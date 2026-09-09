@@ -9,7 +9,13 @@ chat-event-priority: HIGHEST
 #All messages with wrong or without chatSymbol will force to defaultChannel
 defaultChannel: Local
 
+#
 #Chat elements that could be used in format line of channel.
+#Chat elements take precedence over PlaceHolderAPI processing.
+#There is {message} placeholder that will be processed by this plugin anyway.
+#
+#Click action variants: [SUGGEST_COMMAND, RUN_COMMAND, OPEN_URL]
+#
 ChatElements:
   player_name:
     text: "{player_name}"
@@ -20,21 +26,13 @@ ChatElements:
       type: SUGGEST_COMMAND
       value: "/msg {player_name}"
 
-  message:
-    text: "{message}"
-
 Channels:
   Local:
     speak-permission: cloudchat.channel.local
     message-sound: NONE
     cooldown: 0
     cooldown-bypass-permission: cloudchat.cooldown.bypass.local
-    prefix: '&8[&7L&8]'
-    format:
-      - "{channel_prefix} "
-      - player_name
-      - ": "
-      - message
+    format: "&8[&7L&8] {player_name}&f: &7{message}"
     radius: 200
     quickSymbol: ''
 
@@ -44,11 +42,7 @@ Channels:
     cooldown: 3
     cooldown-bypass-permission: cloudchat.cooldown.bypass.global
     prefix: '&8[&2G&8]'
-    format:
-      - "{channel_prefix} "
-      - player_name
-      - ": "
-      - message
+    format: "&8[&aG&8] {player_name}&f: &7{message}"
     radius: 0
     quickSymbol: '!'
 
@@ -58,10 +52,6 @@ Channels:
     cooldown: 300
     cooldown-bypass-permission: cloudchat.cooldown.bypass.trade
     prefix: '&8[&a$&8]'
-    format:
-      - "{channel_prefix} "
-      - player_name
-      - ": "
-      - message
+    format: "&8[&2T&8] {player_name}&f: &7{message}"
     radius: 0
     quickSymbol: '$'

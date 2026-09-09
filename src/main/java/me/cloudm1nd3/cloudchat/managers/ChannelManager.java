@@ -3,7 +3,8 @@ package me.cloudm1nd3.cloudchat.managers;
 import me.cloudm1nd3.cloudchat.CloudChat;
 import me.cloudm1nd3.cloudchat.configs.Config;
 import me.cloudm1nd3.cloudchat.objects.ChatChannel;
-import me.cloudm1nd3.cloudchat.objects.ChatElement;
+import me.cloudm1nd3.cloudchat.objects.FormatToken;
+import me.cloudm1nd3.cloudchat.utilities.FormatParser;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
@@ -67,7 +68,6 @@ public class ChannelManager {
         defaultSection.set("message-sound", "NONE");
         defaultSection.set("cooldown", 3);
         defaultSection.set("cooldown-bypass-permission", "cloudchat.cooldown.bypass.default");
-        defaultSection.set("prefix", "");
         defaultSection.set("format", "{player_name}: {message}");
         defaultSection.set("radius", 0);
         defaultSection.set("quickSymbol", "");
@@ -124,27 +124,27 @@ public class ChannelManager {
         return channels.get(channelName);
     }
 
-    public List<ChatElement> parseChannelFormat(ConfigurationSection channelSection) {
-        List<ChatElement> result = new ArrayList<>();
-
-        List<?> list = channelSection.getList("format");
-        if (list == null) {
-            String raw = channelSection.getString("format");
-            if (raw != null) result.add(new ChatElement(raw));
-            return result;
-        }
-
-        for (Object item : list) {
-            if (item instanceof String str) {
-                ChatElement element = ChatElementManager.getInstance().getChatElementByName(str);
-                if(element == null){
-                    element = new ChatElement(str);
-                }
-                result.add(element);
-            }
-        }
-        return result;
-    }
+//    public List<ChatElement> parseChannelFormat(ConfigurationSection channelSection) {
+//        List<ChatElement> result = new ArrayList<>();
+//
+//        List<?> list = channelSection.getList("format");
+//        if (list == null) {
+//            String raw = channelSection.getString("format");
+//            if (raw != null) result.add(new ChatElement(raw));
+//            return result;
+//        }
+//
+//        for (Object item : list) {
+//            if (item instanceof String str) {
+//                ChatElement element = ChatElementManager.getInstance().getChatElementByName(str);
+//                if(element == null){
+//                    element = new ChatElement(str);
+//                }
+//                result.add(element);
+//            }
+//        }
+//        return result;
+//    }
 
     private ChatChannel parseChannel(String name, ConfigurationSection section) {
         String speakPerm = section.getString("speak-permission", "");
@@ -153,12 +153,14 @@ public class ChannelManager {
         int cooldown = section.getInt("cooldown", 3);
         String bypassPerm = section.getString("cooldown-bypass-permission",
                 "cloudchat.cooldown.bypass." + name.toLowerCase());
-        String prefix = section.getString("prefix", "");
         int radius = section.getInt("radius", 0);
         String quickSymbol = section.getString("quickSymbol", "");
-        List<ChatElement> format = parseChannelFormat(section);
+        //String format = parseChannelFormat(section);
+        String format = section.getString("format", "{player_name}: {message}");
+        List<FormatToken> tokens = FormatParser.parse(format);
 
-        return new ChatChannel(name, speakPerm, sound, cooldown, bypassPerm, prefix, format, radius, quickSymbol);
+
+        return new ChatChannel(name, speakPerm, sound, cooldown, bypassPerm, tokens, radius, quickSymbol);
     }
 
     private Sound parseSound(String str) {

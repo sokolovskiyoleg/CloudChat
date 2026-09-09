@@ -18,9 +18,9 @@ public class MessageContext {
     private final ChatPlayer chatPlayer;
     private final ChatChannel chatChannel;
 
-    private final String formattedMessageString;
+    private String formattedMessageString;
 
-    private final Collection<Audience> originalViewers;
+    private Collection<Audience> originalViewers;
 
     public MessageContext(AsyncChatEvent event){
         this.event = event;
@@ -32,9 +32,12 @@ public class MessageContext {
         String originalMessageString = ColorService.toPlain(originalMessageComponent).trim();
 
         chatChannel = ChannelManager.getInstance().getChatChannelByMessage(originalMessageString);
-
-        formattedMessageString = originalMessageString.substring(chatChannel.getQuickSymbol().length()).trim();
-
+        if(chatChannel == null){
+            formattedMessageString = null;
+        }
+        else {
+            formattedMessageString = originalMessageString.substring(chatChannel.getQuickSymbol().length()).trim();
+        }
         originalViewers = new HashSet<>(event.viewers());
     }
 
@@ -58,7 +61,4 @@ public class MessageContext {
         return originalViewers;
     }
 
-    public AsyncChatEvent getEvent(){
-        return event;
-    }
 }
