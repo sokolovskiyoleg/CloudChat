@@ -1,0 +1,13 @@
+# Сообщения плагина CloudChat
+
+prefix: '&8[&bCloudChat&8]&r '
+
+command:
+  reload-success: '{prefix}&aКонфигурация и языковые файлы перезагружены.'
+  reload-failed: '{prefix}&cОшибка при перезагрузке. Смотрите в консоль.'
+  no-permission: '{prefix}&cУ вас нет прав на выполнение этой команды.'
+
+channel:
+  # %d% - дни, %h% - часы, %m% - минуты, %s% - секунды.
+  cooldown: "{prefix}&cПомедленнее, сэмпай (˶˃ᆺ˂˶). %m%мин. %s%сек."
+  no-permission: '{prefix}&cУ вас нет прав говорить в этот канал.'

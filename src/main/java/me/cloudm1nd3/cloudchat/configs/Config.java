@@ -12,7 +12,6 @@ public class Config {
         plugin = pl;
         plugin.saveDefaultConfig();
         reload();
-
     }
 
     public static void reload(){

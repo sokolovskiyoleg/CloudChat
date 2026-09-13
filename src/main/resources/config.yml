@@ -1,10 +1,10 @@
-lang: ru
+#available languages : 'ru'
+lang: 'ru'
 
 # The priority of chat event interception by the plugin. I recommend using HIGH / HIGHEST.
 # Available values:
 # LOWEST | LOW | NORMAL | HIGH | HIGHEST | MONITOR
 chat-event-priority: HIGHEST
-
 
 #All messages with wrong or without chatSymbol will force to defaultChannel
 defaultChannel: Local
@@ -41,7 +41,6 @@ Channels:
     message-sound: NONE
     cooldown: 3
     cooldown-bypass-permission: cloudchat.cooldown.bypass.global
-    prefix: '&8[&2G&8]'
     format: "&8[&aG&8] {player_name}&f: &7{message}"
     radius: 0
     quickSymbol: '!'
@@ -51,7 +50,6 @@ Channels:
     message-sound: ENTITY_EXPERIENCE_ORB_PICKUP
     cooldown: 300
     cooldown-bypass-permission: cloudchat.cooldown.bypass.trade
-    prefix: '&8[&a$&8]'
     format: "&8[&2T&8] {player_name}&f: &7{message}"
     radius: 0
     quickSymbol: '$'
