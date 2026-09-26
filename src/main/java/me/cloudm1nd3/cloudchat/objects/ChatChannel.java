@@ -45,4 +45,8 @@ public class ChatChannel {
     public int getRadius(){
         return radius;
     }
+
+    public String getSpeakPermission(){
+        return this.speakPermission;
+    }
 }

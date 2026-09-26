@@ -3,12 +3,13 @@ package me.cloudm1nd3.cloudchat.objects;
 import net.kyori.adventure.text.event.ClickEvent;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ChatElement {
     private String name = null;
     private final String text;
     private List<String> hoverLines = null;
-    private ClickEvent.Action actionType = null;
+    private ClickEvent.Action<?> actionType = null;
     private String actionValue = null;
 
     public ChatElement(String text){
@@ -20,8 +21,13 @@ public class ChatElement {
         this.text = text;
         this.hoverLines = hoverLines;
         if(type != null && value != null){
-            actionType = ClickEvent.Action.valueOf(type);
-            actionValue = value;
+            try{
+                actionType = parseAction(type);
+                actionValue = value;
+            } catch (IllegalArgumentException e){
+                actionType = null;
+                actionValue = null;
+            }
         } else {
             actionType = null;
             actionValue = null;
@@ -36,11 +42,23 @@ public class ChatElement {
         return  text;
     }
 
+    private static ClickEvent.Action<?> parseAction(String type){
+        return switch (type.toUpperCase(Locale.ROOT)) {
+            case "OPEN_URL" -> ClickEvent.Action.OPEN_URL;
+            case "OPEN_FILE" -> ClickEvent.Action.OPEN_FILE;
+            case "RUN_COMMAND" -> ClickEvent.Action.RUN_COMMAND;
+            case "SUGGEST_COMMAND" -> ClickEvent.Action.SUGGEST_COMMAND;
+            case "CHANGE_PAGE" -> ClickEvent.Action.CHANGE_PAGE;
+            case "COPY_TO_CLIPBOARD" -> ClickEvent.Action.COPY_TO_CLIPBOARD;
+            default -> throw new IllegalArgumentException("Unknown click event action type '" + type + "'. Valid values: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, CHANGE_PAGE, COPY_TO_CLIPBOARD");
+        };
+    }
+
     public List<String> getHoverLines(){
         return hoverLines;
     }
 
-    public ClickEvent.Action getActionType(){
+    public ClickEvent.Action<?> getActionType(){
         return actionType;
     }
 

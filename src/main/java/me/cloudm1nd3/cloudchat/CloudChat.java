@@ -3,6 +3,7 @@ package me.cloudm1nd3.cloudchat;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.cloudm1nd3.cloudchat.commands.Commands;
 import me.cloudm1nd3.cloudchat.configs.Config;
+import me.cloudm1nd3.cloudchat.configs.Messages;
 import me.cloudm1nd3.cloudchat.listeners.AsyncChatListener;
 import me.cloudm1nd3.cloudchat.listeners.PlayerSessionListener;
 import me.cloudm1nd3.cloudchat.managers.ChannelManager;
@@ -23,6 +24,7 @@ public final class CloudChat extends JavaPlugin {
     @Override
     public void onEnable() {
         Config.init(this);
+        Messages.init(this, Config.getLang());
         ChatElementManager.init(this);
         ChannelManager.init(this);
         ChatPlayerManager.init(this);
@@ -30,8 +32,7 @@ public final class CloudChat extends JavaPlugin {
         PlaceholderService.init();
 
         Commands chatCommand = new Commands();
-        getCommand("chatCommand").setExecutor(chatCommand);
-
+        getCommand("cloudchat").setExecutor(chatCommand);
 
         registerListeners();
     }

@@ -1,6 +1,7 @@
 package me.cloudm1nd3.cloudchat.utilities;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.cloudm1nd3.cloudchat.configs.Messages;
 import me.cloudm1nd3.cloudchat.managers.CooldownManager;
 import me.cloudm1nd3.cloudchat.objects.ChatChannel;
 import me.cloudm1nd3.cloudchat.objects.ChatPlayer;
@@ -10,9 +11,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class ChatProcessor {
 
@@ -25,14 +24,19 @@ public class ChatProcessor {
         }
 
         if (!checkPermission(context)) {
-            context.getPlayer().sendMessage(ColorService.processLegacy("&4Нет прав!"));
+            Messages.CHANNEL_NO_PERMISSION.send(context.getPlayer());
             event.setCancelled(true);
             return;
         }
 
-        int cooldown = getCooldown(context);
+        long cooldown = getCooldown(context);
         if (cooldown > 0) {
-            context.getPlayer().sendMessage("Остуди своё траханье, друг. Остужать еще " + cooldown + " секунд!");
+            Map<String, String> timeFormat = durationPlaceholders(cooldown);
+            Messages.CHANNEL_COOLDOWN.send(context.getPlayer(),
+                    "%d%", timeFormat.get("%d%"),
+                    "%h%", timeFormat.get("%h%"),
+                    "%m%", timeFormat.get("%m%"),
+                    "%s%", timeFormat.get("%s%"));
             event.setCancelled(true);
             return;
         }
@@ -53,6 +57,21 @@ public class ChatProcessor {
 
     private Component buildFinalComponent(MessageContext context){
         return MessageFormatter.buildFinalComponent(context);
+    }
+
+    private Map<String, String> durationPlaceholders(long millis) {
+        long totalSeconds = millis / 1000;
+        int days    = (int) (totalSeconds / 86400);
+        int hours   = (int) ((totalSeconds % 86400) / 3600);
+        int minutes = (int) ((totalSeconds % 3600) / 60);
+        int seconds = (int) (totalSeconds % 60 + 1);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("%d%", String.valueOf(days));
+        map.put("%h%", String.valueOf(hours));
+        map.put("%m%", String.valueOf(minutes));
+        map.put("%s%", String.valueOf(seconds));
+        return map;
     }
 
     private boolean isMessageEmpty(MessageContext context) {
@@ -80,16 +99,15 @@ public class ChatProcessor {
         CooldownManager.getInstance().setCooldown(chatChannel, chatPlayer);
     }
 
-    private int getCooldown(MessageContext context){
+    private long getCooldown(MessageContext context){
         ChatPlayer chatPlayer = context.getChatPlayer();
-        long cooldown = CooldownManager.getInstance().getCooldown(context.getChatChannel(), chatPlayer);
-        return (int) Math.ceil(cooldown / 1000.0);
+        return CooldownManager.getInstance().getCooldown(context.getChatChannel(), chatPlayer);
     }
 
     private boolean checkPermission(MessageContext context){
         Player player = context.getPlayer();
-        String channelName = context.getChatChannel().getName();
-        return player.hasPermission("cloudchat.channel." + channelName);
+        ChatChannel channel = context.getChatChannel();
+        return player.hasPermission(channel.getSpeakPermission());
     }
 
     private void applyChangesToEvent(AsyncChatEvent event, Collection<Audience> viewers, Component message){
